@@ -2,11 +2,5 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 class Post(BaseModel):
-    id: int = Field(..., description="Unique identifier for the post")
     content: str = Field(..., description="Content of the post")
-    author_id: int = Field(..., description="ID of the author of the post")
-    is_published: bool = Field(..., description="Indicates whether the post is published")
-
-
-class PostUpdate(BaseModel):
-    content: str | None = Field(None, description="Updated content of the post")
+    is_published: bool | None = Field(..., description="Indicates whether the post is published")

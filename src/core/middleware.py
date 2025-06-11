@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request, HTTPException
 from fastapi.responses import RedirectResponse
 
+
 from jose import jwt, JWTError
 from datetime import datetime
 
@@ -19,17 +20,13 @@ def setup_middlewares(app):
     )
 
 
-def jwt_required(func):
+def auth_required(func):
     """
     Decorator to ensure that a request has a valid JWT token.
     This is a placeholder for actual JWT validation logic.
     """
     @wraps(func)
-    async def wrapper(*args, **kwargs):
-
-        request: Request = kwargs.get("request")
-        if not request:
-            raise HTTPException(status_code=500, detail="Request object not found")
+    async def wrapper(request: Request, *args, **kwargs):
 
         authorization: str = request.headers.get("Authorization")
         if not authorization or not authorization.startswith("Bearer "):
@@ -41,9 +38,10 @@ def jwt_required(func):
             exp = payload.get("exp")
             if exp and datetime.utcfromtimestamp(exp) < datetime.utcnow():
                 return RedirectResponse(url=f"{settings.auth_api_base}/token/refresh")
-        except JWTError:
+            request.state.user = payload
+        except JWTError as exc:
             raise HTTPException(status_code=401, detail="Token inválido")
 
-        return await func(*args, **kwargs)
+        return await func(request, *args, **kwargs)
     
     return wrapper
