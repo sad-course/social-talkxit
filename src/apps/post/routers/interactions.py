@@ -19,7 +19,7 @@ async def add_like_to_post(post_id: int, db=Depends(get_db)):
 # Comment interaction endpoint's
 @router.get("/comment/{post_id}")
 @auth_required
-async def get_comments_for_post(post_id: int, db: AsyncSession = Depends(get_db)):
+async def get_comments_for_post(request: Request, post_id: int, db: AsyncSession = Depends(get_db)):
     async with db as session:
         result = await session.execute(select(CommentModel).where(CommentModel.post_id == post_id).order_by(CommentModel.created_at.desc()))
         posts = result.scalars().all()
