@@ -4,7 +4,7 @@ from fastapi import Request, HTTPException
 from fastapi.responses import RedirectResponse
 
 
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 from datetime import datetime
 
 from src.config.settings import settings
@@ -34,11 +34,15 @@ def auth_required(func):
 
         token = authorization.split(" ")[1]
         try:
-            payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
-            exp = payload.get("exp")
-            if exp and datetime.utcfromtimestamp(exp) < datetime.utcnow():
-                return RedirectResponse(url=f"{settings.auth_api_base}/token/refresh")
+            payload = jwt.decode(
+                token,
+                settings.jwt_secret_key,
+                algorithms=[settings.jwt_algorithm],
+            )
+
             request.state.user = payload
+        except ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token expirado")
         except JWTError as exc:
             raise HTTPException(status_code=401, detail="Token inválido")
 
