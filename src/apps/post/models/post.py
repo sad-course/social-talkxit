@@ -6,7 +6,7 @@ def current_time():
     """Retorna o horário atual com fuso horário UTC."""
     return datetime.utcnow()
 
-class Post(SQLModel, table=True):
+class PostModel(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True, description="Unique identifier for the post")
     content: str = Field(max_length=1000, description="Content of the post")
     author_id: int = Field(nullable=False, description="ID of the author of the post")
