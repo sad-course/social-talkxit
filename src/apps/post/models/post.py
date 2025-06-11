@@ -1,10 +1,6 @@
 from sqlmodel import Field, SQLModel
 from datetime import datetime
-from datetime import timezone
-
-def current_time():
-    """Retorna o horário atual com fuso horário UTC."""
-    return datetime.utcnow()
+from src.apps.post.utils import current_time
 
 class PostModel(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True, description="Unique identifier for the post")
@@ -13,4 +9,3 @@ class PostModel(SQLModel, table=True):
     created_at: datetime = Field(default_factory=current_time, nullable=True, description="Timestamp when the post was created")
     updated_at: datetime = Field(default_factory=current_time, nullable=True, description="Timestamp when the post was last updated")
     is_published: bool = Field(default=False, description="Indicates whether the post is published")
- 

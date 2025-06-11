@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.middleware import auth_required
 from ..types import Post as PostDTO
-from src.apps.post.models import Post as PostModel
+from src.apps.post.models import PostModel
 from src.core.db import get_db
 router = APIRouter()
 
