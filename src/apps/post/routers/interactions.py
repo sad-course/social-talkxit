@@ -33,7 +33,7 @@ async def give_like(
             raise HTTPException(status_code=404, detail="Post not found")
         
         result = await session.execute(
-            select(PostModel).where(
+            select(LikeModel).where(
                 and_(
                     LikeModel.author_id == user_id,
                     LikeModel.post_id == post_id,
